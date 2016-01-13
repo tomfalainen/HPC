@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 project(IslandCounter)
 
@@ -12,14 +12,24 @@ find_package(PythonLibs REQUIRED)
 #set(PYTHON_INCLUDE_DIR ${PYTHON_ROOT}/include/python2.7)
 #set(PYTHON_LIBRARY ${PYTHON_ROOT}/lib/libpython2.7.so)
 
+set(PYBOOSTCONVERTER_ROOT "/home/tomas/libs/pyboostcvconverter")
+
 find_package( OpenCV REQUIRED )
 
-set(BOOST_NO_BOOST_CMAKE ON)
+add_library(pbcvt SHARED IMPORTED)
+set_target_properties(pbcvt PROPERTIES IMPORTED_LOCATION ${PYBOOSTCONVERTER_ROOT}/build)
 
-add_executable( test main.cpp )
-#add_library(IslandCounter SHARED islandCounter.cpp)
+#set(BOOST_NO_BOOST_CMAKE ON)
+
+add_executable( region_proposer_test main.cpp )
+add_library(WordDetection SHARED region_proposer.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-#target_include_directories(IslandCounter PUBLIC ${BOOST_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
-#target_link_libraries(IslandCounter LINK_PUBLIC ${Boost_LIBRARIES} ${OpenCV_LIBS} ${PYTHON_LIBRARY})
+target_include_directories(WordDetection PUBLIC ${BOOST_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} "${PYBOOSTCONVERTER_ROOT}/include")
+target_link_libraries(WordDetection LINK_PUBLIC ${Boost_LIBRARIES} ${OpenCV_LIBS} ${PYTHON_LIBRARY} ${PYBOOSTCONVERTER_ROOT}/build/pbcvt.so)
+
+#message(${PYBOOSTCONVERTER_ROOT})
+
+#target_include_directories(test PUBLIC ${BOOST_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(region_proposer_test LINK_PUBLIC ${Boost_LIBRARIES} ${OpenCV_LIBS} ${PYTHON_LIBRARY})
