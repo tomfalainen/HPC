@@ -11,3 +11,6 @@ class RegionProposer{
 		int testhest(int);
 };
 
+boost::python::tuple extract_regions(const cv::Mat&, const boost::python::list&, const boost::python::list&);
+
+cv::Mat calculate_overlap(const cv::Mat&, const cv::Mat&);
