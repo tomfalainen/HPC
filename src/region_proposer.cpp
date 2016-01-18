@@ -174,7 +174,7 @@ Mat calculate_overlap_fg(const Mat& boxes1, const Mat& boxes2, const Mat& img, c
                 equals_value(p_img, val);
 
 //              intersection
-                mask = gt_img(Range(y1, y2), Range(x1, x2));
+                mask = gt_img(Range(y1, y2), Range(x1, x2)).clone();
                 equals_value(mask, gt_val);
                 i_img = l_img(Range(y1 - b1.at<int>(1), y2 - b1.at<int>(1)), 
                                   Range(x1 - b1.at<int>(0), x2 - b1.at<int>(0)));

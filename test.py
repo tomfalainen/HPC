@@ -42,26 +42,34 @@ t_img = (1 - img).astype(np.ubyte)
 di = sp.io.loadmat('001.tif.mat')
 ab = di['all_boxes']
 params = di['params']
-gtf = "/media/tomas/Local Disk/Programming/caffe_databases/icdar2013/gt_words_train/001.tif.dat"
+gtf = "001.tif.dat"
 gt_img = np.fromfile(gtf, dtype=np.int32).reshape(img.shape)     
 tb = sp.io.loadmat('001gt.tif.mat')['true_boxes']
 
-#ab = ab[:500]
-#params = params[:500]
+#ab = ab[:50]
+#params = params[:50]
+
+#ab = np.array([ab[1]])
+#tb = np.array([tb[6]])
 
 start = time.time()
 o1 = wd.calculate_overlap_fg(ab, tb, t_img, gt_img.copy(), params, params)
 print time.time() - start
 #32.3182749748
 
-
 start = time.time()
 o2 = np.array([[du.calculate_overlap(a, t, t_img, gt_img.copy(), param) for t in tb] for a, param in zip(ab, params)])
 print time.time() - start
-print np.all(np.isclose(o1, o2, 1e-1))
+ys, xs = np.nonzero(np.isclose(o1, o2, 1e-4) == 0)
+print o1[1,6], o2[1,6]
 
-
-
+#%%
+params = np.array([params[1]])
+ab = np.array([ab[1]])
+tb = np.array([tb[6]])
+#%%
+print wd.calculate_overlap_fg(ab, tb, t_img, gt_img.copy(), params, params)
+print np.array([[du.calculate_overlap(a, t, t_img, gt_img.copy(), param) for t in tb] for a, param in zip(ab, params)])
 
 
 #%%
